@@ -1,0 +1,16 @@
+type Time = int;
+type Result = 
+ variant {
+   err: text;
+   ok;
+ };
+service : {
+  convertTextToSpeech: (text) -> (Result);
+  getEventLog: () -> (vec record {
+                            Time;
+                            text;
+                          }) query;
+  getPlaybackStatus: () -> (text) query;
+  handleEvent: (text) -> ();
+  playAudio: () -> (Result);
+}
