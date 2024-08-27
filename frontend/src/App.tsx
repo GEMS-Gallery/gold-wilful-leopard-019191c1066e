@@ -17,15 +17,25 @@ const App: React.FC = () => {
     fetchEventLog();
   }, []);
 
+  const handleError = (error: any) => {
+    console.error('Error:', error);
+    setLoading(false);
+    alert("An error occurred. The canister may be out of cycles. Please try again later.");
+  };
+
   const onSubmit = async (data: { text: string }) => {
     setLoading(true);
     try {
-      await backend.convertTextToSpeech(data.text);
-      await backend.playAudio();
-      await updatePlaybackStatus();
-      await updateEventLog();
+      const result = await backend.convertTextToSpeech(data.text);
+      if ('ok' in result) {
+        await backend.playAudio();
+        await updatePlaybackStatus();
+        await updateEventLog();
+      } else {
+        handleError(result.err);
+      }
     } catch (error) {
-      console.error('Error:', error);
+      handleError(error);
     }
     setLoading(false);
   };
@@ -43,11 +53,15 @@ const App: React.FC = () => {
   const handleParticipantJoined = async () => {
     setLoading(true);
     try {
-      await backend.handleEvent('participant_joined');
-      await updateEventLog();
-      await updatePlaybackStatus();
+      const result = await backend.handleEvent('participant_joined');
+      if ('ok' in result) {
+        await updateEventLog();
+        await updatePlaybackStatus();
+      } else {
+        handleError(result.err);
+      }
     } catch (error) {
-      console.error('Error:', error);
+      handleError(error);
     }
     setLoading(false);
   };

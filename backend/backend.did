@@ -11,6 +11,6 @@ service : {
                             text;
                           }) query;
   getPlaybackStatus: () -> (text) query;
-  handleEvent: (text) -> ();
+  handleEvent: (text) -> (Result);
   playAudio: () -> (Result);
 }

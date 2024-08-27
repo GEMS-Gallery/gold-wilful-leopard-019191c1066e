@@ -9,7 +9,7 @@ export interface _SERVICE {
   'convertTextToSpeech' : ActorMethod<[string], Result>,
   'getEventLog' : ActorMethod<[], Array<[Time, string]>>,
   'getPlaybackStatus' : ActorMethod<[], string>,
-  'handleEvent' : ActorMethod<[string], undefined>,
+  'handleEvent' : ActorMethod<[string], Result>,
   'playAudio' : ActorMethod<[], Result>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;

@@ -9,7 +9,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getPlaybackStatus' : IDL.Func([], [IDL.Text], ['query']),
-    'handleEvent' : IDL.Func([IDL.Text], [], []),
+    'handleEvent' : IDL.Func([IDL.Text], [Result], []),
     'playAudio' : IDL.Func([], [Result], []),
   });
 };

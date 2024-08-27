@@ -15,6 +15,9 @@ actor {
   // Mutable variables
   var currentPlaybackStatus : Text = "idle";
 
+  // Constants
+  let MAX_LOG_SIZE = 100;
+
   // Convert text to speech (simulated)
   public func convertTextToSpeech(text : Text) : async Result.Result<(), Text> {
     // Simulate TTS conversion
@@ -43,13 +46,20 @@ actor {
   };
 
   // Handle event
-  public func handleEvent(eventType : Text) : async () {
+  public func handleEvent(eventType : Text) : async Result.Result<(), Text> {
     let timestamp = Time.now();
+    if (eventLog.size() >= MAX_LOG_SIZE) {
+      eventLog := Array.tabulate<(Time.Time, Text)>(MAX_LOG_SIZE - 1, func (i : Nat) = eventLog[i + 1]);
+    };
     eventLog := Array.append(eventLog, [(timestamp, eventType)]);
     if (eventType == "participant_joined") {
-      ignore await convertTextToSpeech("Hello there, new participant!");
-      ignore await playAudio();
+      let ttsResult = await convertTextToSpeech("Hello there, new participant!");
+      switch (ttsResult) {
+        case (#ok(_)) { ignore await playAudio(); };
+        case (#err(e)) { return #err(e); };
+      };
     };
+    #ok(())
   };
 
   // Get current playback status
